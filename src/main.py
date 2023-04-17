@@ -27,10 +27,13 @@ def make_copy():
     archivos = os.listdir()
     if consecutivo == "" or juliano == "":
         message_text.set("Revisa el consecutivo o juliano")
-        message_label = ctk.CTkLabel(root,
-                                     textvariable=message_text,
-                                     text_color=YELLOW_COLOR,
-                                     font=ctk.CTkFont(size=20, weight="bold"))
+        message_label.configure(textvariable=message_text,
+                                text_color=YELLOW_COLOR,
+                                font=ctk.CTkFont(size=20, weight="bold"))
+        # message_label = ctk.CTkLabel(root,
+        #                              textvariable=message_text,
+        #                              text_color=YELLOW_COLOR,
+        #                              font=ctk.CTkFont(size=20, weight="bold"))
         message_label.pack(padx=5, pady=(10, 20))
     elif nombre_original in archivos:
         if extension != "":
@@ -40,17 +43,24 @@ def make_copy():
             shutil.copy(src=PATH_ORIGEN + nombre_original, dst=PATH_DESTINO)
         
         message_text.set("¡Copia realizada!")
-        message_label = ctk.CTkLabel(root,
-                                     textvariable=message_text,
-                                     text_color=GREEN_COLOR,
-                                     font=ctk.CTkFont(size=30, weight="bold"))
+        message_label.configure(textvariable=message_text,
+                                text_color=GREEN_COLOR,
+                                font=ctk.CTkFont(size=20, weight="bold"))
+        # message_label = ctk.CTkLabel(root,
+        #                              textvariable=message_text,
+        #                              text_color=GREEN_COLOR,
+        #                              font=ctk.CTkFont(size=30, weight="bold"))
         message_label.pack(padx=5, pady=(10, 20))
     else:
         message_text.set("¡No se encontró el archivo!")
-        message_label = ctk.CTkLabel(root,
-                                     textvariable=message_text,
-                                     text_color=RED_COLOR,
-                                     font=ctk.CTkFont(size=20, weight="bold"))
+        message_label.configure(textvariable=message_text,
+                                text_color=RED_COLOR,
+                                font=ctk.CTkFont(size=20, weight="bold"))
+        # message_label = ctk.CTkLabel(root,
+        #                              textvariable=message_text,
+        #                              text_color=RED_COLOR,
+        #                              font=ctk.CTkFont(size=20, weight="bold"))
+        message_label.pack(padx=5, pady=(10, 20))
 
 
 remote_path = Path(PATH_ORIGEN)
@@ -129,5 +139,7 @@ btn_obtener = ctk.CTkButton(frame,
                             corner_radius=3,
                             command=make_copy)
 btn_obtener.pack(padx=10, pady=(15, 20))
+
+message_label = ctk.CTkLabel(root)
 
 root.mainloop()
