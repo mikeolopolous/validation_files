@@ -2,18 +2,35 @@ import os
 import shutil
 from pathlib import Path
 import customtkinter as ctk
-import tkinter
 
 BLUE_COLOR = "#227C9D"
 GREEN_COLOR = "#17C3B2"
-YELLOW_COLOR = "FFCB77"
-WHITE_COLOR = "#FEF9EF"
-RED_COLOR = "#FE6D73"
 
 PATH_ORIGEN = "/Users/miguel/Downloads/"
 PATH_DESTINO = "/Users/miguel/Documents/"
 PREFIX = "m"
 PATENTE = "3977"
+
+
+def make_copy():
+    consecutivo = consecutivo_txt.get()
+    juliano = juliano_txt.get()
+    extension = extension_txt.get()
+
+    nombre_original = f"{PREFIX}{PATENTE}{consecutivo}.{juliano}"
+    nombre_con_extension = nombre_original + "." + extension
+
+    archivos = os.listdir()
+    for archivo in archivos:
+        if archivo == nombre_original:
+            if extension != "":
+                shutil.copy(src=PATH_ORIGEN + nombre_original, dst=PATH_DESTINO)
+                os.rename(PATH_DESTINO + nombre_original, PATH_DESTINO + nombre_con_extension)
+            else:
+                shutil.copy(src=PATH_ORIGEN + nombre_original, dst=PATH_DESTINO)
+            
+            break
+
 
 remote_path = Path(PATH_ORIGEN)
 os.chdir(remote_path)
@@ -44,7 +61,6 @@ consecutivo_txt = ctk.CTkEntry(consecutivo_frame,
                                border_width=2,
                                border_color=BLUE_COLOR,
                                corner_radius=5,
-                               placeholder_text="001",
                                font=("Helvetica", 14))
 consecutivo_txt.pack(padx=25, pady=(5, 10))
 
@@ -56,13 +72,12 @@ juliano_label = ctk.CTkLabel(juliano_frame,
 juliano_label.pack()
 
 juliano_txt = ctk.CTkEntry(juliano_frame,
-                           width=80,
-                           height=25,
-                           border_width=2,
-                           border_color=BLUE_COLOR,
-                           corner_radius=5,
-                           placeholder_text=".182",
-                           font=("Helvetica", 14))
+                             width=80,
+                             height=25,
+                             border_width=2,
+                             border_color=BLUE_COLOR,
+                             corner_radius=5,
+                             font=("Helvetica", 14))
 juliano_txt.pack(padx=25, pady=(5, 10))
 
 extension_frame = ctk.CTkFrame(frame)
@@ -73,13 +88,12 @@ extension_label = ctk.CTkLabel(extension_frame,
 extension_label.pack()
 
 extension_txt = ctk.CTkEntry(extension_frame,
-                             width=120,
-                             height=25,
-                             border_width=2,
-                             border_color=BLUE_COLOR,
-                             corner_radius=5,
-                             placeholder_text="Ejemplo: .txt",
-                             font=("Helvetica", 14))
+                               width=120,
+                               height=25,
+                               border_width=2,
+                               border_color=BLUE_COLOR,
+                               corner_radius=5,
+                               font=("Helvetica", 14))
 extension_txt.pack(padx=25, pady=(5, 10))
 
 btn_obtener = ctk.CTkButton(frame,
@@ -89,17 +103,8 @@ btn_obtener = ctk.CTkButton(frame,
                             text="OBTENER",
                             fg_color=BLUE_COLOR,
                             hover_color=GREEN_COLOR,
-                            corner_radius=3)
+                            corner_radius=3,
+                            command=make_copy)
 btn_obtener.pack(padx=10, pady=(15, 20))
-
-consecutivo = "001"
-juliano = "err"
-nombre_original = f"{PREFIX}{PATENTE}{consecutivo}.{juliano}"
-
-# archivos = os.listdir()
-# for archivo in archivos:
-#     if archivo == nombre_original:
-#         shutil.copy(src=PATH_ORIGEN + nombre_original, dst=PATH_DESTINO)
-#         break
 
 root.mainloop()
