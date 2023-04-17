@@ -30,11 +30,9 @@ def make_copy():
         message_label.configure(textvariable=message_text,
                                 text_color=YELLOW_COLOR,
                                 font=ctk.CTkFont(size=20, weight="bold"))
-        # message_label = ctk.CTkLabel(root,
-        #                              textvariable=message_text,
-        #                              text_color=YELLOW_COLOR,
-        #                              font=ctk.CTkFont(size=20, weight="bold"))
+
         message_label.pack(padx=5, pady=(10, 20))
+
     elif nombre_original in archivos:
         if extension != "":
             shutil.copy(src=PATH_ORIGEN + nombre_original, dst=PATH_DESTINO)
@@ -46,20 +44,15 @@ def make_copy():
         message_label.configure(textvariable=message_text,
                                 text_color=GREEN_COLOR,
                                 font=ctk.CTkFont(size=20, weight="bold"))
-        # message_label = ctk.CTkLabel(root,
-        #                              textvariable=message_text,
-        #                              text_color=GREEN_COLOR,
-        #                              font=ctk.CTkFont(size=30, weight="bold"))
+        
         message_label.pack(padx=5, pady=(10, 20))
+
     else:
         message_text.set("¡No se encontró el archivo!")
         message_label.configure(textvariable=message_text,
                                 text_color=RED_COLOR,
                                 font=ctk.CTkFont(size=20, weight="bold"))
-        # message_label = ctk.CTkLabel(root,
-        #                              textvariable=message_text,
-        #                              text_color=RED_COLOR,
-        #                              font=ctk.CTkFont(size=20, weight="bold"))
+
         message_label.pack(padx=5, pady=(10, 20))
 
 
