@@ -8,10 +8,9 @@ GREEN_COLOR = "#17C3B2"
 YELLOW_COLOR = "#FFCB77"
 RED_COLOR = "#FE6D73"
 
-# PATH_REMOTO = "\\192.168.11.99\LWOperacionMZO\Enviar"
+PATH_ORIGEN = "M:\\"
 
-PATH_ORIGEN = "/Users/miguel/Downloads/"
-PATH_DESTINO = "/Users/miguel/Documents/"
+PATH_DESTINO = "C:\\Users\\ingmi\\Downloads\\"
 PREFIX = "m"
 PATENTE = "3977"
 
