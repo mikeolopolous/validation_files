@@ -8,9 +8,11 @@ GREEN_COLOR = "#17C3B2"
 YELLOW_COLOR = "#FFCB77"
 RED_COLOR = "#FE6D73"
 
-PATH_ORIGEN = "M:\\"
+ORIGINAL_PATH = Path.home()
 
-PATH_DESTINO = "C:\\Users\\ingmi\\Downloads\\"
+PATH_ORIGEN = "M:\\"
+PATH_DESTINO = str(ORIGINAL_PATH) + "\\Downloads\\"
+os.chdir(PATH_ORIGEN)
 PREFIX = "m"
 PATENTE = "3977"
 
@@ -53,10 +55,7 @@ def make_copy():
                                 font=ctk.CTkFont(size=20, weight="bold"))
 
         message_label.pack(padx=5, pady=(10, 20))
-
-
-remote_path = Path(PATH_ORIGEN)
-os.chdir(remote_path)
+        
 
 root = ctk.CTk()
 root.geometry("400x450")
