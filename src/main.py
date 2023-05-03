@@ -37,8 +37,6 @@ def make_copy():
     nombre_original = f"{prefix}{PATENTE}{consecutivo}.{juliano}"
     nombre_con_extension = nombre_original + "." + extension
 
-    print(os.getcwd())
-
     archivos = os.listdir()
 
     if consecutivo == "" or juliano == "":
@@ -82,7 +80,6 @@ checkbox = ctk.CTkCheckBox(checkbox_frame,
                            onvalue="on",
                            offvalue="off")
 checkbox.pack(padx=25, pady=(5, 10))
-
 
 consecutivo_frame = ctk.CTkFrame(frame)
 consecutivo_frame.pack(padx=25, pady=(10, 5), fill="both")
@@ -142,6 +139,5 @@ btn_obtener = ctk.CTkButton(frame,
                             corner_radius=3,
                             command=make_copy)
 btn_obtener.pack(padx=10, pady=(15, 20))
-
 
 root.mainloop()
