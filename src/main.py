@@ -1,7 +1,8 @@
 import os
 import shutil
-from pathlib import Path
 import customtkinter as ctk
+from pathlib import Path
+from tkinter import messagebox
 
 BLUE_COLOR = "#227C9D"
 GREEN_COLOR = "#17C3B2"
@@ -12,57 +13,55 @@ ORIGINAL_PATH = Path.home()
 
 PATH_ORIGEN = "M:\\"
 PATH_DESTINO = str(ORIGINAL_PATH) + "\\Downloads\\"
-os.chdir(PATH_ORIGEN)
-PREFIX = "m"
 PATENTE = "3977"
 
 
+def set_checkbox():
+    checkbox_value = check_var.get()
+    if checkbox_value == "on":
+        os.chdir(f"{PATH_ORIGEN}\\Recibir")
+    else:
+        os.chdir(f"{PATH_ORIGEN}\\Enviar")
+
+
 def make_copy():
+    set_checkbox()
     consecutivo = consecutivo_txt.get()
-    juliano = juliano_txt.get()
+    juliano = juliano_txt.get().strip()
     extension = extension_txt.get()
 
-    nombre_original = f"{PREFIX}{PATENTE}{consecutivo}.{juliano}"
+    prefix = "m"
+    if juliano != "err" and check_var.get() == "on":
+        prefix = "k"
+
+    nombre_original = f"{prefix}{PATENTE}{consecutivo}.{juliano}"
     nombre_con_extension = nombre_original + "." + extension
 
+    print(os.getcwd())
+
     archivos = os.listdir()
+
     if consecutivo == "" or juliano == "":
-        message_text.set("Revisa el consecutivo o juliano")
-        message_label.configure(textvariable=message_text,
-                                text_color=YELLOW_COLOR,
-                                font=ctk.CTkFont(size=20, weight="bold"))
+        messagebox.showwarning(title="Error en los valores",
+                               message="Revisa el consecutivo o juliano")
 
-        message_label.pack(padx=5, pady=(10, 20))
-
-    elif nombre_original in archivos:
+    elif nombre_original not in archivos:
+        messagebox.showerror(title="Error en búsqueda",
+                             message="No se encontró el archivo")
+    else:
         if extension != "":
-            shutil.copy(src=PATH_ORIGEN + nombre_original, dst=PATH_DESTINO)
+            shutil.copy(src=os.getcwd() + "\\" + nombre_original, dst=PATH_DESTINO)
             os.rename(PATH_DESTINO + nombre_original, PATH_DESTINO + nombre_con_extension)
         else:
-            shutil.copy(src=PATH_ORIGEN + nombre_original, dst=PATH_DESTINO)
-        
-        message_text.set("¡Copia realizada!")
-        message_label.configure(textvariable=message_text,
-                                text_color=GREEN_COLOR,
-                                font=ctk.CTkFont(size=20, weight="bold"))
-        
-        message_label.pack(padx=5, pady=(10, 20))
+            shutil.copy(src=os.getcwd() + "\\" + nombre_original, dst=PATH_DESTINO)
 
-    else:
-        message_text.set("¡No se encontró el archivo!")
-        message_label.configure(textvariable=message_text,
-                                text_color=RED_COLOR,
-                                font=ctk.CTkFont(size=20, weight="bold"))
-
-        message_label.pack(padx=5, pady=(10, 20))
+        messagebox.showinfo(message="Copia realizada")
         
 
 root = ctk.CTk()
 root.geometry("400x450")
 root.resizable(False, False)
 root.title("Duplicador de archivos SAAIM3")
-
-message_text = ctk.StringVar()
 
 title_label = ctk.CTkLabel(root,
                            text="Copia de SAAIM3",
@@ -71,6 +70,19 @@ title_label.pack(padx=5, pady=(10, 20))
 
 frame = ctk.CTkFrame(root)
 frame.pack(fill="x", padx=25)
+
+checkbox_frame = ctk.CTkFrame(frame)
+checkbox_frame.pack(padx=25, pady=(10, 5), fill="both")
+check_var = ctk.StringVar(value="off")
+
+checkbox = ctk.CTkCheckBox(checkbox_frame,
+                           text="Archivo de respuesta",
+                           variable=check_var,
+                           command=set_checkbox,
+                           onvalue="on",
+                           offvalue="off")
+checkbox.pack(padx=25, pady=(5, 10))
+
 
 consecutivo_frame = ctk.CTkFrame(frame)
 consecutivo_frame.pack(padx=25, pady=(10, 5), fill="both")
@@ -131,6 +143,5 @@ btn_obtener = ctk.CTkButton(frame,
                             command=make_copy)
 btn_obtener.pack(padx=10, pady=(15, 20))
 
-message_label = ctk.CTkLabel(root)
 
 root.mainloop()
