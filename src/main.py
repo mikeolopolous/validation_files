@@ -53,7 +53,7 @@ def make_copy():
         else:
             shutil.copy(src=os.getcwd() + "\\" + nombre_original, dst=PATH_DESTINO)
 
-        messagebox.showinfo(message="Copia realizada")
+        messagebox.showinfo(title="Éxito", message="Copia realizada")
         
 
 root = ctk.CTk()
