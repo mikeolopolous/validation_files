@@ -57,7 +57,11 @@ def make_copy():
         
 
 root = ctk.CTk()
-root.geometry("400x450")
+height_screen = root.winfo_screenheight()
+width_screen = root.winfo_screenwidth()
+x = round(width_screen - 100)
+y = round(height_screen / 2)
+root.geometry(f"400x450+{x}+{y}")
 root.resizable(False, False)
 root.title("Duplicador de archivos SAAIM3")
 
