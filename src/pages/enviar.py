@@ -52,7 +52,11 @@ def enviar_view():
             ],
         ),
         controls=[
-            ft.Text(value='Enviar archivos', size=35),
+            ft.Text(
+                value='Enviar',
+                size=35,
+                color=ft.colors.RED_500
+            ),
             ft.Container(
                 width=550,
                 height=620,
@@ -77,19 +81,28 @@ def enviar_view():
                         ft.Row(
                             alignment=ft.MainAxisAlignment.SPACE_AROUND,
                             controls=[
-                                ft.FilledButton(
+                                ft.ElevatedButton(
                                     text='Subir archivo',
+                                    style=ft.ButtonStyle(
+                                        padding=20,
+                                        color={ft.MaterialState.DEFAULT: ft.colors.BLACK},
+                                        bgcolor={
+                                            ft.MaterialState.DEFAULT: ft.colors.BLUE_500,
+                                            ft.MaterialState.PRESSED: ft.colors.BLUE_900,
+                                        },
+                                        shape=ft.RoundedRectangleBorder(radius=10),
+                                    ),
                                 ),
                                 ft.ElevatedButton(
                                     text='Copiar archivo',
                                     style=ft.ButtonStyle(
-                                        color={
-                                            ft.MaterialState.DEFAULT: ft.colors.BLACK
-                                        },
+                                        padding=20,
+                                        color={ft.MaterialState.DEFAULT: ft.colors.BLACK},
                                         bgcolor={
                                             ft.MaterialState.DEFAULT: ft.colors.GREEN_300,
-                                            ft.MaterialState.PRESSED: ft.colors.GREEN_900,
-                                        }
+                                            ft.MaterialState.PRESSED: ft.colors.GREEN_700,
+                                        },
+                                        shape=ft.RoundedRectangleBorder(radius=10),
                                     ),
                                 ),
                             ]
