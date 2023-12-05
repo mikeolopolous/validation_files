@@ -1,13 +1,60 @@
+import os
+import shutil
 import flet as ft
+
+from pathlib import Path
 
 
 def enviar_view():
+    HOME_PATH = Path.home() # Directorio del usuario
+    REMOTE_PATH = 'M:\\'
+    LOCAL_PATH = str(HOME_PATH) + '\\Downloads\\'
+    PATENTE = '3977'
+
+    os.chdir(f'{REMOTE_PATH}\\Enviar')
+
+
+    def on_change_dropdown(e):
+        pass
+
+
+    def make_copy(e):
+        prefijo = prefijo_dropdown.value.strip()
+        consecutivo = consecutivo_textfield.value.strip()
+        juliano = juliano_textfield.value.strip()
+        nueva_extension = nueva_extension_textfield.value.strip()
+        
+        nombre_original = f'{prefijo}{PATENTE}{consecutivo}.{juliano}'
+        archivos_list = os.listdir()
+        if nombre_original in archivos_list:
+            shutil.copy(
+                src=os.getcwd() + '\\' + nombre_original,
+                dst=LOCAL_PATH
+            )
+
+            if nueva_extension != '':
+                nombre_con_extension = nombre_original + '.' + nueva_extension
+                os.rename(src=LOCAL_PATH + nombre_original, dst=LOCAL_PATH + nombre_con_extension)
+
+
     consecutivo_textfield = ft.TextField(
         label='Consecutivo del archivo',
         hint_text='Por ejemplo: "123"',
-        autofocus=True,
         border_color=ft.colors.BLUE_500,
         border=ft.colors.BLUE_500,
+    )
+
+    prefijo_dropdown = ft.Dropdown(
+        width=100,
+        label='Prefijo',
+        border_color=ft.colors.BLUE_500,
+        border=ft.colors.BLUE_500,
+        on_change=on_change_dropdown,
+        options=[
+            ft.dropdown.Option('E'),
+            ft.dropdown.Option('d'),
+            ft.dropdown.Option('m'),
+        ]
     )
 
     juliano_textfield = ft.TextField(
@@ -68,7 +115,7 @@ def enviar_view():
                     controls=[
                         ft.Row(
                             alignment=ft.MainAxisAlignment.CENTER,
-                            controls=[consecutivo_textfield],
+                            controls=[prefijo_dropdown, consecutivo_textfield],
                         ),
                         ft.Row(
                             alignment=ft.MainAxisAlignment.CENTER,
@@ -104,6 +151,7 @@ def enviar_view():
                                         },
                                         shape=ft.RoundedRectangleBorder(radius=10),
                                     ),
+                                    on_click=make_copy
                                 ),
                             ]
                         )
