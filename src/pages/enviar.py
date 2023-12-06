@@ -11,38 +11,57 @@ def enviar_view():
     LOCAL_PATH = str(HOME_PATH) + '\\Downloads\\'
     PATENTE = '3977'
 
-    os.chdir(f'{REMOTE_PATH}\\Enviar')
-
 
     def on_change_dropdown(e):
         pass
 
 
     def make_copy(e):
-        prefijo = prefijo_dropdown.value.strip()
-        consecutivo = consecutivo_textfield.value.strip()
-        juliano = juliano_textfield.value.strip()
-        nueva_extension = nueva_extension_textfield.value.strip()
-        
-        nombre_original = f'{prefijo}{PATENTE}{consecutivo}.{juliano}'
-        archivos_list = os.listdir()
-        if nombre_original in archivos_list:
-            shutil.copy(
-                src=os.getcwd() + '\\' + nombre_original,
-                dst=LOCAL_PATH
+        os.chdir(f'{REMOTE_PATH}\\Enviar')
+
+        if prefijo_dropdown.value != '' and consecutivo_textfield.value != '' and juliano_textfield.value != '':
+            prefijo = prefijo_dropdown.value.strip()
+            consecutivo = consecutivo_textfield.value.strip()
+            juliano = juliano_textfield.value.strip()
+            nueva_extension = nueva_extension_textfield.value.strip()
+            
+            nombre_original = f'{prefijo}{PATENTE}{consecutivo}.{juliano}'
+            archivos_list = os.listdir()
+
+            if nombre_original in archivos_list:
+                shutil.copy(
+                    src=os.getcwd() + '\\' + nombre_original,
+                    dst=LOCAL_PATH
+                )
+
+                if nueva_extension != '':
+                    nombre_con_extension = nombre_original + '.' + nueva_extension
+                    os.rename(src=LOCAL_PATH + nombre_original, dst=LOCAL_PATH + nombre_con_extension)
+
+                e.page.snack_bar = ft.SnackBar(
+                    content=ft.Text('Archivo copiado', text_align=ft.TextAlign.CENTER, size=20),
+                    bgcolor=ft.colors.GREEN_200
+                )
+                e.page.snack_bar.duration = 3000
+                e.page.snack_bar.open = True
+                e.page.update()
+            else:
+                e.page.snack_bar = ft.SnackBar(
+                    content=ft.Text('No se encontró el archivo', text_align=ft.TextAlign.CENTER, size=20),
+                    bgcolor=ft.colors.RED_300
+                )
+                e.page.snack_bar.duration = 3000
+                e.page.snack_bar.open = True
+                e.page.update()
+        else:
+            e.page.snack_bar = ft.SnackBar(
+                content=ft.Text('Todos los campos son obligatorios', text_align=ft.TextAlign.CENTER),
+                bgcolor=ft.colors.RED_300
             )
+            e.page.snack_bar.duration = 3000
+            e.page.snack_bar.open = True
+            e.page.update()
 
-            if nueva_extension != '':
-                nombre_con_extension = nombre_original + '.' + nueva_extension
-                os.rename(src=LOCAL_PATH + nombre_original, dst=LOCAL_PATH + nombre_con_extension)
-
-
-    consecutivo_textfield = ft.TextField(
-        label='Consecutivo del archivo',
-        hint_text='Por ejemplo: "123"',
-        border_color=ft.colors.BLUE_500,
-        border=ft.colors.BLUE_500,
-    )
 
     prefijo_dropdown = ft.Dropdown(
         width=100,
@@ -55,6 +74,14 @@ def enviar_view():
             ft.dropdown.Option('d'),
             ft.dropdown.Option('m'),
         ]
+    )
+
+    consecutivo_textfield = ft.TextField(
+        label='Consecutivo del archivo',
+        hint_text='Por ejemplo: "123"',
+        input_filter=ft.NumbersOnlyInputFilter(),
+        border_color=ft.colors.BLUE_500,
+        border=ft.colors.BLUE_500,
     )
 
     juliano_textfield = ft.TextField(
@@ -100,7 +127,7 @@ def enviar_view():
         ),
         controls=[
             ft.Text(
-                value='Enviar',
+                value='Enviar archivos',
                 size=35,
                 color=ft.colors.RED_500
             ),
