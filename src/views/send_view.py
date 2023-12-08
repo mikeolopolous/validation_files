@@ -5,27 +5,22 @@ import flet as ft
 from pathlib import Path
 
 
-def recibir_view():
+def send_view(page):
     HOME_PATH = Path.home()
     REMOTE_PATH = 'M:\\'
     LOCAL_PATH = str(HOME_PATH) + '\\Downloads\\'
     PATENTE = '3977'
 
 
-
-    def on_change_dropdown(e):
-        pass
-
-
     def make_copy(e):
-        os.chdir(f'{REMOTE_PATH}\\Recibir')
+        os.chdir(f'{REMOTE_PATH}\\Enviar')
 
-        if prefijo_dropdown.value != '' and consecutivo_textfield.value != '' and juliano_textfield != '':
+        if prefijo_dropdown.value != '' and consecutivo_textfield.value != '' and juliano_textfield.value != '':
             prefijo = prefijo_dropdown.value.strip()
             consecutivo = consecutivo_textfield.value.strip()
             juliano = juliano_textfield.value.strip()
             nueva_extension = nueva_extension_textfield.value.strip()
-
+            
             nombre_original = f'{prefijo}{PATENTE}{consecutivo}.{juliano}'
             archivos_list = os.listdir()
 
@@ -39,29 +34,29 @@ def recibir_view():
                     nombre_con_extension = nombre_original + '.' + nueva_extension
                     os.rename(src=LOCAL_PATH + nombre_original, dst=LOCAL_PATH + nombre_con_extension)
 
-                e.page.snack_bar = ft.SnackBar(
+                page.snack_bar = ft.SnackBar(
                     content=ft.Text('Archivo copiado', text_align=ft.TextAlign.CENTER, size=20),
                     bgcolor=ft.colors.GREEN_200
                 )
-                e.page.snack_bar.duration = 3000
-                e.page.snack_bar.open = True
-                e.page.update()
+                page.snack_bar.duration = 3000
+                page.snack_bar.open = True
+                page.update()
             else:
-                e.page.snack_bar = ft.SnackBar(
+                page.snack_bar = ft.SnackBar(
                     content=ft.Text('No se encontró el archivo', text_align=ft.TextAlign.CENTER, size=20),
                     bgcolor=ft.colors.RED_300
                 )
-                e.page.snack_bar.duration = 3000
-                e.page.snack_bar.open = True
-                e.page.update()
+                page.snack_bar.duration = 3000
+                page.snack_bar.open = True
+                page.update()
         else:
-            e.page.snack_bar = ft.SnackBar(
-                content=ft.Text('Todos los campos son obligatorios', text_align=ft.TextAlign.CENTER, size=20),
+            page.snack_bar = ft.SnackBar(
+                content=ft.Text('Todos los campos son obligatorios', text_align=ft.TextAlign.CENTER),
                 bgcolor=ft.colors.RED_300
             )
-            e.page.snack_bar.duration = 3000
-            e.page.snack_bar.open = True
-            e.page.update()
+            page.snack_bar.duration = 3000
+            page.snack_bar.open = True
+            page.update()
 
 
     prefijo_dropdown = ft.Dropdown(
@@ -69,69 +64,41 @@ def recibir_view():
         label='Prefijo',
         border_color=ft.colors.BLUE_500,
         border=ft.colors.BLUE_500,
-        on_change=on_change_dropdown,
         options=[
-            ft.dropdown.Option('A'),
-            ft.dropdown.Option('D'),
+            ft.dropdown.Option('E'),
+            ft.dropdown.Option('d'),
             ft.dropdown.Option('m'),
-            ft.dropdown.Option('k'),
         ]
     )
 
     consecutivo_textfield = ft.TextField(
         label='Consecutivo del archivo',
-        hint_text='Por ejemplo "123"',
+        hint_text='Por ejemplo: "123"',
         input_filter=ft.NumbersOnlyInputFilter(),
         border_color=ft.colors.BLUE_500,
         border=ft.colors.BLUE_500,
     )
 
     juliano_textfield = ft.TextField(
-        label='Día juliano o entensión',
-        hint_text='Por ejemplo: "123" o "cin"',
+        label='Día juliano',
+        hint_text='Por ejemplo: "123"',
         border_color=ft.colors.BLUE_500,
         border=ft.colors.BLUE_500,
     )
 
     nueva_extension_textfield = ft.TextField(
         label='Nueva extensión del archivo',
-        hint_text='Por ejemplo "var"',
+        hint_text='Por ejemplo: "var"',
         border_color=ft.colors.BLUE_500,
         border=ft.colors.BLUE_500,
     )
 
-    return ft.View(
-        route='/recibir',
+    content = ft.Column(
         horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-        vertical_alignment=ft.CrossAxisAlignment.CENTER,
-        appbar=ft.AppBar(
-            leading=ft.Icon(
-                name=ft.icons.ARROW_CIRCLE_DOWN_SHARP,
-                color=ft.colors.BLUE_500,
-                size=36,
-            ),
-            title=ft.Text(value='Recibir prevalidador', color=ft.colors.BLUE_GREY_500),
-            bgcolor=ft.colors.SURFACE_VARIANT,
-            actions=[
-                ft.IconButton(
-                    icon=ft.icons.ARROW_CIRCLE_UP,
-                    icon_color=ft.colors.BLUE_500,
-                    icon_size=36,
-                    tooltip='Enviar a prevalidador',
-                    on_click=lambda e: e.page.go(route='/enviar'),
-                ),
-                ft.IconButton(
-                    icon=ft.icons.ARROW_CIRCLE_DOWN,
-                    icon_color=ft.colors.RED_500,
-                    icon_size=36,
-                ),
-            ]
-        ),
         controls=[
-            ft.Text(
-                value='Recibir archivos',
-                size=35,
-                color=ft.colors.RED_500,
+            ft.Row(
+                alignment=ft.MainAxisAlignment.CENTER,
+                controls=[ft.Text(value='Enviar archivos', size=35, color=ft.colors.RED_500)],
             ),
             ft.Container(
                 width=550,
@@ -155,7 +122,7 @@ def recibir_view():
                             controls=[nueva_extension_textfield],
                         ),
                         ft.Row(
-                            alignment=  ft.MainAxisAlignment.SPACE_AROUND,
+                            alignment=ft.MainAxisAlignment.SPACE_AROUND,
                             controls=[
                                 ft.ElevatedButton(
                                     text='Subir archivo',
@@ -183,9 +150,11 @@ def recibir_view():
                                     on_click=make_copy
                                 ),
                             ],
-                        )
+                        ),
                     ],
                 ),
             ),
         ],
     )
+
+    return content

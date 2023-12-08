@@ -1,46 +1,28 @@
 import flet as ft
 
 import const
-from pages.index import index_view
-from pages.enviar import enviar_view
-from pages.recibir import recibir_view
+
+from views.Router import Router
+from controls.app_bar import navbar
 
 
 def main(page: ft.Page):
     page.title = const.WINDOW_TITLE
     page.window_width = const.WINDOW_WIDTH
     page.window_height = const.WINDOW_HEIGHT
+    page.vertical_alignment = ft.MainAxisAlignment.CENTER
+    page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
 
-    index = index_view()
-    enviar = enviar_view()
-    recibir = recibir_view()
+    page.appbar = navbar(page)
+    router = Router(page)
 
+    page.on_route_change = router.route_change
 
-    def route_change(route):
-        page.views.clear()
+    page.add(
+        router.body
+    )
 
-        if page.route == '/':
-            page.views.append(index)
-            page.update()
-
-        if page.route == '/enviar':
-            page.views.append(enviar)
-            page.update()
-
-        if page.route == '/recibir':
-            page.views.append(recibir)
-            page.update()
-
-
-    def view_pop(view):
-        page.views.pop()
-        top_view = page.views[-1]
-        page.go(top_view.route)
-
-
-    page.on_route_change = route_change
-    page.on_view_pop = view_pop
-    page.go(page.route)
+    page.go('/')
 
 
 ft.app(target=main)
