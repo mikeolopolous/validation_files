@@ -2,6 +2,7 @@ import os
 import shutil
 import flet as ft
 
+from typing import Dict
 from pathlib import Path
 
 
@@ -10,6 +11,10 @@ def send_view(page):
     REMOTE_PATH = 'M:\\'
     LOCAL_PATH = str(HOME_PATH) + '\\Downloads\\'
     PATENTE = '3977'
+
+    prog_bars: Dict[str, ft.ProgressRing] = {}
+    files = ft.Ref[ft.Column]()
+    upload_button = ft.Ref[ft.ElevatedButton]()
 
 
     def make_copy(e):
@@ -59,6 +64,39 @@ def send_view(page):
             page.update()
 
 
+    def file_picker_result(e: ft.FilePickerResultEvent):
+        upload_button.current.disabled = True if e.files is None else False
+        prog_bars.clear()
+        # files.current.controls.clear()
+        if e.files is not None:
+            for f in e.files:
+                prog = ft.ProgressRing(value=0, bgcolor=ft.colors.RED, width=20, height=20)
+                prog_bars[f.name] = prog
+                files.current.controls.append(ft.Row(
+                        controls=[prog, ft.Text(f.name)],
+                    )
+                )
+        page.update()
+
+
+    def on_upload_progress(e: ft.FilePickerUploadEvent):
+        prog_bars[e.file_name].value = e.progress
+        prog_bars[e.file_name].update()
+
+
+    def upload_file(e):
+        if file_picker.result is not None and file_picker.result.files is not None:
+            os.chdir(f'{REMOTE_PATH}\\Enviar')
+            file_name = file_picker.result.files[0].name
+            path_send_file = file_picker.result.files[0].path
+            path = f'{os.getcwd()}\\{file_name}'
+
+            shutil.copy(
+                src=path_send_file,
+                dst=path
+            )
+
+
     prefijo_dropdown = ft.Dropdown(
         width=100,
         label='Prefijo',
@@ -93,6 +131,13 @@ def send_view(page):
         border=ft.colors.BLUE_500,
     )
 
+    file_picker = ft.FilePicker(
+        on_result=file_picker_result,
+        on_upload=on_upload_progress
+    )
+
+    page.overlay.append(file_picker)
+
     content = ft.Column(
         horizontal_alignment=ft.CrossAxisAlignment.CENTER,
         controls=[
@@ -125,16 +170,19 @@ def send_view(page):
                             alignment=ft.MainAxisAlignment.SPACE_AROUND,
                             controls=[
                                 ft.ElevatedButton(
-                                    text='Subir archivo',
+                                    text='Seleccionar archivo',
                                     style=ft.ButtonStyle(
                                         padding=20,
                                         color={ft.MaterialState.DEFAULT: ft.colors.BLACK},
                                         bgcolor={
-                                            ft.MaterialState.DEFAULT: ft.colors.BLUE_500,
-                                            ft.MaterialState.PRESSED: ft.colors.BLUE_900,
+                                            ft.MaterialState.DEFAULT: ft.colors.BLUE_200,
+                                            ft.MaterialState.HOVERED: ft.colors.BLUE_500,
+                                            ft.MaterialState.PRESSED: ft.colors.BLUE_700,
                                         },
                                         shape=ft.RoundedRectangleBorder(radius=10),
                                     ),
+                                    icon=ft.icons.FOLDER_OPEN_ROUNDED,
+                                    on_click=lambda _: file_picker.pick_files(),
                                 ),
                                 ft.ElevatedButton(
                                     text='Copiar archivo',
@@ -143,11 +191,35 @@ def send_view(page):
                                         color={ft.MaterialState.DEFAULT: ft.colors.BLACK},
                                         bgcolor={
                                             ft.MaterialState.DEFAULT: ft.colors.GREEN_300,
+                                            ft.MaterialState.HOVERED: ft.colors.GREEN_500,
                                             ft.MaterialState.PRESSED: ft.colors.GREEN_700,
                                         },
                                         shape=ft.RoundedRectangleBorder(radius=10),
                                     ),
                                     on_click=make_copy
+                                ),
+                            ],
+                        ),
+                        ft.Row(
+                            ref=files,
+                            alignment=ft.MainAxisAlignment.CENTER,
+                            controls=[
+                                ft.ElevatedButton(
+                                    text='Subir archivo',
+                                    ref=upload_button,
+                                    style=ft.ButtonStyle(
+                                        padding=20,
+                                        color={ft.MaterialState.DEFAULT: ft.colors.BLACK},
+                                        bgcolor={
+                                            ft.MaterialState.DEFAULT: ft.colors.YELLOW_300,
+                                            ft.MaterialState.HOVERED: ft.colors.YELLOW_500,
+                                            ft.MaterialState.PRESSED: ft.colors.YELLOW_700,
+                                        },
+                                        shape=ft.RoundedRectangleBorder(radius=10),
+                                    ),
+                                    icon=ft.icons.UPLOAD_FILE_ROUNDED,
+                                    on_click=upload_file,
+                                    disabled=True,
                                 ),
                             ],
                         ),
