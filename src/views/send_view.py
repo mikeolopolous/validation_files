@@ -72,8 +72,9 @@ def send_view(page):
             for f in e.files:
                 prog = ft.ProgressRing(value=0, bgcolor=ft.colors.RED, width=20, height=20)
                 prog_bars[f.name] = prog
-                files.current.controls.append(ft.Row(
-                        controls=[prog, ft.Text(f.name)],
+                files.current.controls.append(
+                    ft.Row(
+                        controls=[prog, ft.Text(f.name)]
                     )
                 )
         page.update()
