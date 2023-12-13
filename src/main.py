@@ -7,6 +7,7 @@ from controls.app_bar import navbar
 
 
 def main(page: ft.Page):
+    page.theme_mode = 'dark'
     page.title = const.WINDOW_TITLE
     page.window_width = const.WINDOW_WIDTH
     page.window_height = const.WINDOW_HEIGHT
@@ -25,4 +26,4 @@ def main(page: ft.Page):
     page.go('/')
 
 
-ft.app(target=main)
+ft.app(target=main, assets_dir='assets')

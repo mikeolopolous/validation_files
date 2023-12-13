@@ -9,9 +9,9 @@ def navbar(page):
             size=36,
         ),
         title=ft.Text(
-            value='Inicio',
+            value='Epson',
             color=ft.colors.BLUE_300,
-            size=35
+            size=32
         ),
         bgcolor=ft.colors.GREY_900,
         actions=[

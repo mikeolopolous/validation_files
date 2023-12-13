@@ -19,7 +19,7 @@ def index_view(page):
                     alignment=ft.MainAxisAlignment.CENTER,
                     controls=[
                         ft.Image(
-                            src='../../assets/logo_lw.png',
+                            src='assets/logo_lw.png',
                             width=400,
                             height=400,
                         ),

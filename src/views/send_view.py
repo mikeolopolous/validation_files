@@ -92,10 +92,19 @@ def send_view(page):
             path_send_file = file_picker.result.files[0].path
             path = f'{os.getcwd()}\\{file_name}'
 
-            shutil.copy(
+            copy_file = shutil.copy(
                 src=path_send_file,
                 dst=path
             )
+
+            if copy_file is not None:
+                page.snack_bar = ft.SnackBar(
+                    content=ft.Text('Archivo cargado correctamente', text_align=ft.TextAlign.CENTER, size=20),
+                    bgcolor=ft.colors.GREEN_200
+                )
+                page.snack_bar.duration = 3000
+                page.snack_bar.open = True
+                page.update()
 
 
     prefijo_dropdown = ft.Dropdown(
