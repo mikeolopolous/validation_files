@@ -8,61 +8,71 @@ from pathlib import Path
 
 def send_view(page):
     HOME_PATH = Path.home()
-    REMOTE_PATH = 'M:\\'
-    LOCAL_PATH = str(HOME_PATH) + '\\Downloads\\'
-    PATENTE = '3977'
+    REMOTE_PATH = "M:\\"
+    LOCAL_PATH = str(HOME_PATH) + "\\Downloads\\"
+    PATENTE = "3977"
 
     prog_bars: Dict[str, ft.ProgressRing] = {}
     files = ft.Ref[ft.Column]()
     upload_button = ft.Ref[ft.ElevatedButton]()
 
-
     def make_copy(e):
-        os.chdir(f'{REMOTE_PATH}\\Enviar')
+        os.chdir(f"{REMOTE_PATH}\\Enviar")
 
-        if prefijo_dropdown.value != '' and consecutivo_textfield.value != '' and juliano_textfield.value != '':
+        if (
+            prefijo_dropdown.value != ""
+            and consecutivo_textfield.value != ""
+            and juliano_textfield.value != ""
+        ):
             prefijo = prefijo_dropdown.value.strip()
             consecutivo = consecutivo_textfield.value.strip()
             juliano = juliano_textfield.value.strip()
             nueva_extension = nueva_extension_textfield.value.strip()
-            
-            nombre_original = f'{prefijo}{PATENTE}{consecutivo}.{juliano}'
+
+            nombre_original = f"{prefijo}{PATENTE}{consecutivo}.{juliano}"
             archivos_list = os.listdir()
 
             if nombre_original in archivos_list:
-                shutil.copy(
-                    src=os.getcwd() + '\\' + nombre_original,
-                    dst=LOCAL_PATH
-                )
+                shutil.copy(src=os.getcwd() + "\\" + nombre_original, dst=LOCAL_PATH)
 
-                if nueva_extension != '':
-                    nombre_con_extension = nombre_original + '.' + nueva_extension
-                    os.rename(src=LOCAL_PATH + nombre_original, dst=LOCAL_PATH + nombre_con_extension)
+                if nueva_extension != "":
+                    nombre_con_extension = nombre_original + "." + nueva_extension
+                    os.rename(
+                        src=LOCAL_PATH + nombre_original,
+                        dst=LOCAL_PATH + nombre_con_extension,
+                    )
 
                 page.snack_bar = ft.SnackBar(
-                    content=ft.Text('Archivo copiado', text_align=ft.TextAlign.CENTER, size=20),
-                    bgcolor=ft.colors.GREEN_200
+                    content=ft.Text(
+                        "Archivo copiado", text_align=ft.TextAlign.CENTER, size=20
+                    ),
+                    bgcolor=ft.colors.GREEN_200,
                 )
                 page.snack_bar.duration = 3000
                 page.snack_bar.open = True
                 page.update()
             else:
                 page.snack_bar = ft.SnackBar(
-                    content=ft.Text('No se encontró el archivo', text_align=ft.TextAlign.CENTER, size=20),
-                    bgcolor=ft.colors.RED_300
+                    content=ft.Text(
+                        "No se encontró el archivo",
+                        text_align=ft.TextAlign.CENTER,
+                        size=20,
+                    ),
+                    bgcolor=ft.colors.RED_300,
                 )
                 page.snack_bar.duration = 3000
                 page.snack_bar.open = True
                 page.update()
         else:
             page.snack_bar = ft.SnackBar(
-                content=ft.Text('Todos los campos son obligatorios', text_align=ft.TextAlign.CENTER),
-                bgcolor=ft.colors.RED_300
+                content=ft.Text(
+                    "Todos los campos son obligatorios", text_align=ft.TextAlign.CENTER
+                ),
+                bgcolor=ft.colors.RED_300,
             )
             page.snack_bar.duration = 3000
             page.snack_bar.open = True
             page.update()
-
 
     def file_picker_result(e: ft.FilePickerResultEvent):
         upload_button.current.disabled = True if e.files is None else False
@@ -70,57 +80,66 @@ def send_view(page):
         # files.current.controls.clear()
         if e.files is not None:
             for f in e.files:
-                prog = ft.ProgressRing(value=0, bgcolor=ft.colors.RED, width=20, height=20)
-                prog_bars[f.name] = prog
-                files.current.controls.append(
-                    ft.Row(
-                        controls=[prog, ft.Text(f.name)]
-                    )
+                prog = ft.ProgressRing(
+                    value=0, bgcolor=ft.colors.RED, width=20, height=20
                 )
+                prog_bars[f.name] = prog
+                files.current.controls.append(ft.Row(controls=[prog, ft.Text(f.name)]))
         page.update()
-
 
     def on_upload_progress(e: ft.FilePickerUploadEvent):
         prog_bars[e.file_name].value = e.progress
         prog_bars[e.file_name].update()
 
-
     def upload_file(e):
         if file_picker.result is not None and file_picker.result.files is not None:
-            os.chdir(f'{REMOTE_PATH}\\Enviar')
+            os.chdir(f"{REMOTE_PATH}\\Enviar")
             file_name = file_picker.result.files[0].name
             path_send_file = file_picker.result.files[0].path
-            path = f'{os.getcwd()}\\{file_name}'
+            path = f"{os.getcwd()}\\{file_name}"
 
-            copy_file = shutil.copy(
-                src=path_send_file,
-                dst=path
-            )
+            copy_file = shutil.copy(src=path_send_file, dst=path)
 
             if copy_file is not None:
                 page.snack_bar = ft.SnackBar(
-                    content=ft.Text('Archivo cargado correctamente', text_align=ft.TextAlign.CENTER, size=20),
-                    bgcolor=ft.colors.GREEN_200
+                    content=ft.Text(
+                        "Archivo cargado correctamente",
+                        text_align=ft.TextAlign.CENTER,
+                        size=20,
+                    ),
+                    bgcolor=ft.colors.GREEN_200,
                 )
                 page.snack_bar.duration = 3000
                 page.snack_bar.open = True
                 page.update()
 
-
-    prefijo_dropdown = ft.Dropdown(
+    aduana_dropdown = ft.Dropdown(
         width=100,
-        label='Prefijo',
+        label="Aduana",
         border_color=ft.colors.BLUE_500,
         border=ft.colors.BLUE_500,
         options=[
-            ft.dropdown.Option('E'),
-            ft.dropdown.Option('d'),
-            ft.dropdown.Option('m'),
-        ]
+            ft.dropdown.Option("160"),
+            ft.dropdown.Option("240"),
+            ft.dropdown.Option("480"),
+            ft.dropdown.Option("510"),
+        ],
+    )
+
+    prefijo_dropdown = ft.Dropdown(
+        width=100,
+        label="Prefijo",
+        border_color=ft.colors.BLUE_500,
+        border=ft.colors.BLUE_500,
+        options=[
+            ft.dropdown.Option("E"),
+            ft.dropdown.Option("d"),
+            ft.dropdown.Option("m"),
+        ],
     )
 
     consecutivo_textfield = ft.TextField(
-        label='Consecutivo del archivo',
+        label="Consecutivo del archivo",
         hint_text='Por ejemplo: "123"',
         input_filter=ft.NumbersOnlyInputFilter(),
         border_color=ft.colors.BLUE_500,
@@ -128,22 +147,21 @@ def send_view(page):
     )
 
     juliano_textfield = ft.TextField(
-        label='Día juliano',
+        label="Día juliano",
         hint_text='Por ejemplo: "123"',
         border_color=ft.colors.BLUE_500,
         border=ft.colors.BLUE_500,
     )
 
     nueva_extension_textfield = ft.TextField(
-        label='Nueva extensión del archivo',
+        label="Nueva extensión del archivo",
         hint_text='Por ejemplo: "var"',
         border_color=ft.colors.BLUE_500,
         border=ft.colors.BLUE_500,
     )
 
     file_picker = ft.FilePicker(
-        on_result=file_picker_result,
-        on_upload=on_upload_progress
+        on_result=file_picker_result, on_upload=on_upload_progress
     )
 
     page.overlay.append(file_picker)
@@ -153,7 +171,9 @@ def send_view(page):
         controls=[
             ft.Row(
                 alignment=ft.MainAxisAlignment.CENTER,
-                controls=[ft.Text(value='Enviar archivos', size=35, color=ft.colors.RED_500)],
+                controls=[
+                    ft.Text(value="Enviar archivos", size=35, color=ft.colors.RED_500)
+                ],
             ),
             ft.Container(
                 width=550,
@@ -166,7 +186,11 @@ def send_view(page):
                     controls=[
                         ft.Row(
                             alignment=ft.MainAxisAlignment.CENTER,
-                            controls=[prefijo_dropdown, consecutivo_textfield],
+                            controls=[
+                                aduana_dropdown,
+                                prefijo_dropdown,
+                                consecutivo_textfield,
+                            ],
                         ),
                         ft.Row(
                             alignment=ft.MainAxisAlignment.CENTER,
@@ -180,10 +204,12 @@ def send_view(page):
                             alignment=ft.MainAxisAlignment.SPACE_AROUND,
                             controls=[
                                 ft.ElevatedButton(
-                                    text='Seleccionar archivo',
+                                    text="Seleccionar archivo",
                                     style=ft.ButtonStyle(
                                         padding=20,
-                                        color={ft.MaterialState.DEFAULT: ft.colors.BLACK},
+                                        color={
+                                            ft.MaterialState.DEFAULT: ft.colors.BLACK
+                                        },
                                         bgcolor={
                                             ft.MaterialState.DEFAULT: ft.colors.BLUE_200,
                                             ft.MaterialState.HOVERED: ft.colors.BLUE_500,
@@ -195,10 +221,12 @@ def send_view(page):
                                     on_click=lambda _: file_picker.pick_files(),
                                 ),
                                 ft.ElevatedButton(
-                                    text='Copiar archivo',
+                                    text="Copiar archivo",
                                     style=ft.ButtonStyle(
                                         padding=20,
-                                        color={ft.MaterialState.DEFAULT: ft.colors.BLACK},
+                                        color={
+                                            ft.MaterialState.DEFAULT: ft.colors.BLACK
+                                        },
                                         bgcolor={
                                             ft.MaterialState.DEFAULT: ft.colors.GREEN_300,
                                             ft.MaterialState.HOVERED: ft.colors.GREEN_500,
@@ -206,7 +234,7 @@ def send_view(page):
                                         },
                                         shape=ft.RoundedRectangleBorder(radius=10),
                                     ),
-                                    on_click=make_copy
+                                    on_click=make_copy,
                                 ),
                             ],
                         ),
@@ -215,11 +243,13 @@ def send_view(page):
                             alignment=ft.MainAxisAlignment.CENTER,
                             controls=[
                                 ft.ElevatedButton(
-                                    text='Subir archivo',
+                                    text="Subir archivo",
                                     ref=upload_button,
                                     style=ft.ButtonStyle(
                                         padding=20,
-                                        color={ft.MaterialState.DEFAULT: ft.colors.BLACK},
+                                        color={
+                                            ft.MaterialState.DEFAULT: ft.colors.BLACK
+                                        },
                                         bgcolor={
                                             ft.MaterialState.DEFAULT: ft.colors.YELLOW_300,
                                             ft.MaterialState.HOVERED: ft.colors.YELLOW_500,
