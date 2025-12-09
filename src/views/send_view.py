@@ -4,11 +4,11 @@ import flet as ft
 
 from typing import Dict
 from pathlib import Path
+from const import Aduanas
 
 
 def send_view(page):
     HOME_PATH = Path.home()
-    REMOTE_PATH = "M:\\"
     LOCAL_PATH = str(HOME_PATH) + "\\Downloads\\"
     PATENTE = "3977"
 
@@ -16,14 +16,29 @@ def send_view(page):
     files = ft.Ref[ft.Column]()
     upload_button = ft.Ref[ft.ElevatedButton]()
 
-    def make_copy(e):
-        os.chdir(f"{REMOTE_PATH}\\Enviar")
+    def set_remote_path():
+        match aduana_dropdown.value:
+            case "160":
+                return Aduanas.MANZANILLO.value
+            case "240":
+                return Aduanas.LAREDO.value
+            case "480":
+                return Aduanas.GUADALAJARA.value
+            case "510":
+                return Aduanas.LAZARO.value
 
+    def make_copy(e):
         if (
-            prefijo_dropdown.value != ""
+            aduana_dropdown.value != ""
+            and prefijo_dropdown.value != ""
             and consecutivo_textfield.value != ""
             and juliano_textfield.value != ""
         ):
+            e.control.disabled = True
+            page.update()
+            remote_path = set_remote_path()
+            os.chdir(f"{remote_path}\\Enviar")
+
             prefijo = prefijo_dropdown.value.strip()
             consecutivo = consecutivo_textfield.value.strip()
             juliano = juliano_textfield.value.strip()
@@ -50,6 +65,7 @@ def send_view(page):
                 )
                 page.snack_bar.duration = 3000
                 page.snack_bar.open = True
+                e.control.disabled = False
                 page.update()
             else:
                 page.snack_bar = ft.SnackBar(
@@ -62,6 +78,7 @@ def send_view(page):
                 )
                 page.snack_bar.duration = 3000
                 page.snack_bar.open = True
+                e.control.disabled = False
                 page.update()
         else:
             page.snack_bar = ft.SnackBar(
@@ -93,7 +110,10 @@ def send_view(page):
 
     def upload_file(e):
         if file_picker.result is not None and file_picker.result.files is not None:
-            os.chdir(f"{REMOTE_PATH}\\Enviar")
+            if aduana_dropdown.value != "":
+                remote_path = set_remote_path()
+                os.chdir(f"{remote_path}\\Enviar")
+
             file_name = file_picker.result.files[0].name
             path_send_file = file_picker.result.files[0].path
             path = f"{os.getcwd()}\\{file_name}"
@@ -164,6 +184,21 @@ def send_view(page):
         on_result=file_picker_result, on_upload=on_upload_progress
     )
 
+    make_copy_button = ft.ElevatedButton(
+        text="Copiar archivo",
+        style=ft.ButtonStyle(
+            padding=20,
+            color={ft.MaterialState.DEFAULT: ft.colors.BLACK},
+            bgcolor={
+                ft.MaterialState.DEFAULT: ft.colors.GREEN_300,
+                ft.MaterialState.HOVERED: ft.colors.GREEN_500,
+                ft.MaterialState.PRESSED: ft.colors.GREEN_700,
+            },
+            shape=ft.RoundedRectangleBorder(radius=10),
+        ),
+        on_click=make_copy,
+    )
+
     page.overlay.append(file_picker)
 
     content = ft.Column(
@@ -220,22 +255,7 @@ def send_view(page):
                                     icon=ft.icons.FOLDER_OPEN_ROUNDED,
                                     on_click=lambda _: file_picker.pick_files(),
                                 ),
-                                ft.ElevatedButton(
-                                    text="Copiar archivo",
-                                    style=ft.ButtonStyle(
-                                        padding=20,
-                                        color={
-                                            ft.MaterialState.DEFAULT: ft.colors.BLACK
-                                        },
-                                        bgcolor={
-                                            ft.MaterialState.DEFAULT: ft.colors.GREEN_300,
-                                            ft.MaterialState.HOVERED: ft.colors.GREEN_500,
-                                            ft.MaterialState.PRESSED: ft.colors.GREEN_700,
-                                        },
-                                        shape=ft.RoundedRectangleBorder(radius=10),
-                                    ),
-                                    on_click=make_copy,
-                                ),
+                                make_copy_button,
                             ],
                         ),
                         ft.Row(
