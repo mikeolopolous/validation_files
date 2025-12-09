@@ -1,3 +1,4 @@
+import os
 import flet as ft
 
 
@@ -7,7 +8,7 @@ def index_view(page):
         controls=[
             ft.Row(
                 alignment=ft.MainAxisAlignment.CENTER,
-                controls=[ft.Text(value='Copia de archivos SAAIM3', size=35)],
+                controls=[ft.Text(value="Copia de archivos SAAIM3", size=35)],
             ),
             ft.Container(
                 width=550,
@@ -19,7 +20,9 @@ def index_view(page):
                     alignment=ft.MainAxisAlignment.CENTER,
                     controls=[
                         ft.Image(
-                            src='assets/logo_lw.png',
+                            src=os.path.join(
+                                os.path.dirname(__file__), "..", "assets", "logo_lw.png"
+                            ),
                             width=400,
                             height=400,
                         ),
